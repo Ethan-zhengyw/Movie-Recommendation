@@ -1,7 +1,6 @@
 VPATH=src:bin:dest
 
-file=TestTest
-#file=Initialize
+file=Initialize
 
 ${file}.jar: ${file}.java
 	rm -rf bin/${file}
