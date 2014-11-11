@@ -86,7 +86,7 @@ public class Initialize {
         job.setNumReduceTasks(200);               //-----------
         job.setPartitionerClass(MoviePartitioner.class);
 
-        job.setJarByClass(Initialzie.class);
+        job.setJarByClass(Initialize.class);
         job.setMapperClass(MovieMapper.class);
         job.setCombinerClass(UserRatingReducer.class);
         job.setReducerClass(UserRatingReducer.class);
