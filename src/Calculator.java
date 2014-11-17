@@ -1,8 +1,3 @@
-/*
- * This mapreduce job will save movie and corresponding rating into different page * [MovieID1:UserID1 Rating1g|UserID2 Rating2...]
- * [MovieID2:UserID1 Rating1g|UserID2 Rating2...] *  ...
- *  each page has 20 movie
- */
 package hadoop.group;
 
 import org.apache.hadoop.conf.Configuration;
@@ -61,21 +56,16 @@ public class Calculator {
             }
             StringTokenizer itr = new StringTokenizer(ratings_1, "|");
             Map<Integer, Double> ratings_1_map = new HashMap<Integer, Double>();
-            //System.out.println(mid);
-            //System.out.println(ratings_1);
+
             while (itr.hasMoreTokens()) {
                 StringTokenizer child = new StringTokenizer(itr.nextToken(), " ");
                 int item_key = Integer.parseInt(child.nextToken());
                 Double item_value = Double.parseDouble(child.nextToken());
-                //System.out.println(item_key);
-                //System.out.println(item_value);
                 ratings_1_map.put(item_key, item_value);
             }
             
             for (int i = 0; i < 10681; i++) {
-            //for (int i = 0; i < 100; i++) {
                 target_mid = (int)movieIDs.get(i);
-                //System.out.println(target_mid);
                 if (target_mid > mid) {
                     double sum = 0;
                     String ratings_2 = getRatings(target_mid);
@@ -83,30 +73,21 @@ public class Calculator {
                         context.write(key, new Text(String.valueOf(target_mid) + " -1"));
                         continue;
                     }
-                    //System.out.println(ratings_2);
                     itr = new StringTokenizer(ratings_2, "|");
                     Map<Integer, Double> ratings_2_map = new HashMap<Integer, Double>();
                     while (itr.hasMoreTokens()) {
                         StringTokenizer child = new StringTokenizer(itr.nextToken(), " ");
                         int item_key = Integer.parseInt(child.nextToken());
                         Double item_value = Double.parseDouble(child.nextToken());
-                        //System.out.println(item_key);
-                        //System.out.println(item_value);
                         ratings_2_map.put(item_key, item_value);
                     }
 
                     Iterator keys = ratings_1_map.keySet().iterator();
                     while (keys.hasNext()) {
                         Integer key_ = (Integer)keys.next();
-                        //System.out.println(String.valueOf(mid) + " finding " + String.valueOf(target_mid) + " user " + String.valueOf(key_));
-                        if (ratings_2_map.containsKey(key_)) {
+                        if (ratings_2_map.containsKey(key_))
                             sum += Math.pow(ratings_1_map.get(key_) - ratings_2_map.get(key_), 2);
-                            //System.out.println("!!! succeed");
-                        } else {
-                            //System.out.println("!!! failed");
-                        }
                     }
-                    //System.out.println(sum);
                     sum = 1 / Math.sqrt(sum + 1);
 
                     result.set(String.valueOf(target_mid) + " " + String.valueOf(sum));
@@ -162,19 +143,14 @@ public class Calculator {
             is.readFully(0, buffer);
             is.close();
             fs.close();
-            //System.out.println(buffer.toString());
         }
 
         return buffer;
     }
 
     public static void main(String[] args) throws Exception {
-        //System.out.println(readFile("/movies/step1/part-r-00000"));
-        //Calculator.count = 0;
         Calculator.db = new HashMap<Integer, String>();
         Calculator.loadDB();
-       //for (int i = 0; i < 100000; i++)
-       //    System.out.println(getRatings(i));
         Calculator.movieIDs = new ArrayList<Integer>();
         Configuration conf = new Configuration();
 
@@ -188,11 +164,6 @@ public class Calculator {
             System.exit(2);
         }
         Job job = new Job(conf, "word count");
-
-        //conf.setInt("reduce.tasks.num", 20); //-------------
-        //job.setNumReduceTasks(20);               //-----------
-        //job.setPartitionerClass(MoviePartitioner.class);
-
         job.setJarByClass(Calculator.class);
         job.setMapperClass(MovieMapper.class);
         job.setCombinerClass(UserRatingReducer.class);
