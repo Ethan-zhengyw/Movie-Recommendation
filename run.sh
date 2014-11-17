@@ -1,7 +1,8 @@
+#class=Initialize
+#
+#hadoop fs -rm -r /movies/one_step1
+#hadoop jar dest/${class}.jar hadoop.group.${class} /movie/ratings.dat /movies/one_step1
+
 class=Calculator
-
-#hadoop fs -rm -r /movie/*
-#hadoop jar dest/${class}.jar hadoop.group.${class} /ml-1m/r1.train /movie/output
-
-hadoop fs -rm -r /movie/output2
-hadoop jar dest/${class}.jar hadoop.group.${class} /ml-10M100K/movies.dat /movie/output2
+hadoop fs -rm -r /movies/one_step2
+hadoop jar dest/${class}.jar hadoop.group.${class} /movie/movies.dat /movies/one_step2

@@ -60,13 +60,13 @@ public class Initialize {
         }
     }
 
-    public static class MoviePartitioner extends Partitioner<IntWritable, Text> {
-        @Override
-        public int getPartition(IntWritable key, Text value, int numOfPartitions) {
-            int destination = key.get() / 20;
-            return destination;
-        }
-    }
+    //public static class MoviePartitioner extends Partitioner<IntWritable, Text> {
+    //    @Override
+    //    public int getPartition(IntWritable key, Text value, int numOfPartitions) {
+    //        int destination = key.get() / 327;
+    //        return destination;
+    //    }
+    //}
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
@@ -82,9 +82,9 @@ public class Initialize {
         }
         Job job = new Job(conf, "word count");
 
-        conf.setInt("reduce.tasks.num", 200); //-------------
-        job.setNumReduceTasks(200);               //-----------
-        job.setPartitionerClass(MoviePartitioner.class);
+        //conf.setInt("reduce.tasks.num", 200); //-------------
+        //job.setNumReduceTasks(200);               //-----------
+        //job.setPartitionerClass(MoviePartitioner.class);
 
         job.setJarByClass(Initialize.class);
         job.setMapperClass(MovieMapper.class);
